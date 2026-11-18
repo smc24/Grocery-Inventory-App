@@ -60,10 +60,30 @@ def createList():
         print("Item added successfully.\n")
         print(loadInventory())
 
-        continueList = input("Would you like to enter another item? ").upper()
+        continueList = input("Would you like to enter another item? (Y/N): ").upper()
+
+def updateExpDate(itemName):
+    df = loadInventory()
+
+    # checks if the fridge/inventory list is eempty
+    if df.empty:
+        print("Your Inventory is empty.")
+
+    # get index using item's name index.get_loc()
+    itemIndex = df.columns.get_loc('Item Name')
+    # then .iloc() to locate the value
+    value = df.iloc[[itemIndex]]
+    print(value)
+
+    # use value variable to locate exp date
+    
+
+    # df.loc['Item Name'][itemName]
+
 
     
 def main():
-    createList()
+    # createList()
+    updateExpDate("chicken")
 
 main()
