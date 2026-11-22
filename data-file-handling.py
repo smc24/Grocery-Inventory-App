@@ -50,7 +50,7 @@ def createList():
         newRow = {
             "Item Name": items,
             "Quantity": quantity,
-            "Expiration Date": expDate,
+            "Expiration Date": parsedDate,
             "Category": category,
             "Date Added": dateAdded
         }
@@ -69,21 +69,65 @@ def updateExpDate(itemName):
     if df.empty:
         print("Your Inventory is empty.")
 
-    # get index using item's name index.get_loc()
-    itemIndex = df.columns.get_loc('Item Name')
-    # then .iloc() to locate the value
-    value = df.iloc[[itemIndex]]
-    print(value)
+    # find rows with that item name
+    # .str.strip() takes away whitespace
+    matches = (
+        df["Item Name"].str.strip().str.lower() == itemName.strip().lower()
+    )
 
-    # use value variable to locate exp date
-    
+    # finds the index of the match(es)
+    matchingRows = df.index[matches]
 
-    # df.loc['Item Name'][itemName]
+    if matchingRows.empty:
+        print(itemName, " was not found in your inventory.")
+        return # user should be rerouted to the main menu
+
+    # if there is more than match, user must select which one
+    if len(matchingRows) > 1:
+        print("Which entry for ", itemName, " do you want to update?")
+
+        for number, rowIndex in enumerate(matchingRows, start=1):
+            expiration = df.loc[rowIndex, "Expiration Date"]
+            added = df.loc[rowIndex, "Date Added"] # targets that exact cell
+            print(number, " Expires: ", expiration, " | Added:", added)
+
+        try:
+            choice = int(input("Enter the entry number: "))
+        except ValueError:
+            print("Try again. Enter a whole number.")
+            return
+
+        # checks if entry is within range of choice list
+        if not 1 <= choice <= len(matchingRows):
+            print("That number choice is out of range.")
+            return
+
+        # index of row the user wants to update
+        rowIndex = matchingRows[choice - 1]
+    else:
+        rowIndex = matchingRows[0]
+
+    newDate = input("Enter the new expiration date in the following format (MM/DD/YYYY)").strip()
+
+    try:
+        # parse expiration date to datetime object
+        parsedDate = datetime.strptime(newDate, "%m/%d/%Y")
+    except ValueError:
+        print("Enter a valid date in MM/DD/YYYY format.")
+        return
+
+    df.loc[rowIndex, "Expiration Date"] = parsedDate.isoformat()
+    df.to_csv(INVENTORY_FILE, index=False)
+
+    print("Expiration date updated successfully.")
+    print(loadInventory())
+
 
 
     
 def main():
     # createList()
     updateExpDate("chicken")
+    # print(loadInventory())
 
 main()
