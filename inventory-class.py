@@ -215,6 +215,24 @@ class Inventory:
         print("Category updated successfully.")
         print(self.loadInventory())
 
+    def removeItem(self):
+
+        df = self.loadInventory()
+
+        itemName = input("Enter the food name to remove: ").lower()
+
+        matches = df.index[df["Item Name"].str.lower() == itemName].tolist()
+
+        if not matches:
+            print("Item not found.")
+            return
+
+        df = df.drop(matches[0]).reset_index(drop=True)
+
+        df.to_csv(self.INVENTORY_FILE, index=False)
+
+        print("Food item removed successfully!")
+        print(self.loadInventory())
 
 def main():
     # while loop that allows user to continue to enter values until they are finished
@@ -248,7 +266,8 @@ def main():
     # fridgeList.updateExpDate("cheese")
     # fridgeList.updateCategory("cheese")
     # fridgeList.updateName()
-    fridgeList.updateQuantity()
+    # fridgeList.updateQuantity()
+    fridgeList.removeItem()
     
         
 
