@@ -114,7 +114,58 @@ class Inventory:
         print("Expiration date updated successfully.")
         print(self.loadInventory())
 
-        
+    def updateCategory(self, itemName):
+        df = self.loadInventory()
+
+        # checks if the fridge/inventory list is eempty
+        if df.empty:
+            print("Your Inventory is empty.")
+
+        # find rows with that item name
+        # .str.strip() takes away whitespace
+        matches = (
+            df["Item Name"].str.strip().str.lower() == itemName.strip().lower()
+        )
+
+        # finds the index of the match(es)
+        matchingRows = df.index[matches]
+
+        if matchingRows.empty:
+            print(itemName, " was not found in your inventory.")
+            return # user should be rerouted to the main menu
+
+        # if there is more than match, user must select which one
+        if len(matchingRows) > 1:
+            print("Which entry for ", itemName, " do you want to update?")
+
+            for number, rowIndex in enumerate(matchingRows, start=1):
+                expiration = df.loc[rowIndex, "Expiration Date"]
+                added = df.loc[rowIndex, "Date Added"] # targets that exact cell
+                print(number, " Expires: ", expiration, " | Added:", added)
+
+            try:
+                choice = int(input("Enter the entry number: "))
+            except ValueError:
+                print("Try again. Enter a whole number.")
+                return
+
+            # checks if entry is within range of choice list
+            if not 1 <= choice <= len(matchingRows):
+                print("That number choice is out of range.")
+                return
+
+            # index of row the user wants to update
+            rowIndex = matchingRows[choice - 1]
+        else:
+            rowIndex = matchingRows[0]
+
+        newCategory = input("Enter the new category for this item: ").strip()
+
+        df.loc[rowIndex, "Category"] = newCategory
+        df.to_csv(self.INVENTORY_FILE, index=False)
+
+        print("Category updated successfully.")
+        print(self.loadInventory())
 
 
 def main():
@@ -147,6 +198,7 @@ def main():
         continueList = input("Would you like to enter another item? (Y/N): ").upper()
 
     fridgeList.updateExpDate("cheese")
+    fridgeList.updateCategory("cheese")
     
         
 
