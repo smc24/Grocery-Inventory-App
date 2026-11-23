@@ -38,7 +38,15 @@ def createList():
     # while loop that allows user to continue to enter values until they are finished
     while continueList == "Y" :
         items = input("Enter the name of the item: ").lower()
-        category = input("Enter the category this item belongs to (Dairy, Fresh Produce, Protein, Condiments, or Drinks):").lower()
+        print("Enter the category this item belongs to:\n")
+        print("\n- Dairy (ex. cheese, Eggs)\n")
+        print("- Fresh Produce(ex. fruit, veggies)")
+        print("- Protein (ex. chicken, fish ,shell fish )")
+        print("- Condiments (ex. mayo,relish)")
+        print("- Drinks (ex. juices, tea, water , smoothie)")
+
+        category = input("-Dairy(ex. cheese, Eggs)\n").lower()
+
         quantity = int(input("Enter the number of units of this item: "))
         expDate = input("Enter the expiration date in the following format (MM/DD/YYYY): ")
         dateAdded = datetime.now()
