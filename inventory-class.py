@@ -54,6 +54,66 @@ class Inventory:
         print("Item added successfully.\n")
         print(self.loadInventory())
 
+    def updateExpDate(self, itemName):
+        df = self.loadInventory()
+
+        # checks if the fridge/inventory list is eempty
+        if df.empty:
+            print("Your Inventory is empty.")
+
+        # find rows with that item name
+        # .str.strip() takes away whitespace
+        matches = (
+            df["Item Name"].str.strip().str.lower() == itemName.strip().lower()
+        )
+
+        # finds the index of the match(es)
+        matchingRows = df.index[matches]
+
+        if matchingRows.empty:
+            print(itemName, " was not found in your inventory.")
+            return # user should be rerouted to the main menu
+
+        # if there is more than match, user must select which one
+        if len(matchingRows) > 1:
+            print("Which entry for ", itemName, " do you want to update?")
+
+            for number, rowIndex in enumerate(matchingRows, start=1):
+                expiration = df.loc[rowIndex, "Expiration Date"]
+                added = df.loc[rowIndex, "Date Added"] # targets that exact cell
+                print(number, " Expires: ", expiration, " | Added:", added)
+
+            try:
+                choice = int(input("Enter the entry number: "))
+            except ValueError:
+                print("Try again. Enter a whole number.")
+                return
+
+            # checks if entry is within range of choice list
+            if not 1 <= choice <= len(matchingRows):
+                print("That number choice is out of range.")
+                return
+
+            # index of row the user wants to update
+            rowIndex = matchingRows[choice - 1]
+        else:
+            rowIndex = matchingRows[0]
+
+        newDate = input("Enter the new expiration date in the following format (MM/DD/YYYY)").strip()
+
+        try:
+            # parse expiration date to datetime object
+            parsedDate = datetime.strptime(newDate, "%m/%d/%Y")
+        except ValueError:
+            print("Enter a valid date in MM/DD/YYYY format.")
+            return
+
+        df.loc[rowIndex, "Expiration Date"] = parsedDate.isoformat()
+        df.to_csv(self.INVENTORY_FILE, index=False)
+
+        print("Expiration date updated successfully.")
+        print(self.loadInventory())
+
         
 
 
@@ -62,20 +122,23 @@ def main():
     continueList = "Y"
 
     while continueList == "Y" :
+        try:   
+            items = input("Enter the name of the item: ").lower()
+            print("Enter the category this item belongs to:")
+            print("- Dairy (ex. cheese, Eggs)")
+            print("- Fresh Produce(ex. fruit, veggies)")
+            print("- Protein (ex. chicken, fish ,shell fish )")
+            print("- Condiments (ex. mayo,relish)")
+            print("- Drinks (ex. juices, tea, water , smoothie)")
 
-        items = input("Enter the name of the item: ").lower()
-        print("Enter the category this item belongs to:\n")
-        print("- Dairy (ex. cheese, Eggs)")
-        print("- Fresh Produce(ex. fruit, veggies)")
-        print("- Protein (ex. chicken, fish ,shell fish )")
-        print("- Condiments (ex. mayo,relish)")
-        print("- Drinks (ex. juices, tea, water , smoothie)")
+            category = input("Select a category: \n").lower()
 
-        category = input("Select a category: \n").lower()
-
-        quantity = int(input("Enter the number of units of this item: "))
-        expDate = input("Enter the expiration date in the following format (MM/DD/YYYY): ")
-        dateAdded = datetime.now()
+            quantity = int(input("Enter the number of units of this item: "))
+            expDate = input("Enter the expiration date in the following format (MM/DD/YYYY): ")
+            dateAdded = datetime.now()
+        except ValueError:
+            print("Invalid input. Please enter the correct data types.")
+            continue
 
         fridgeList = Inventory(items, quantity, expDate, category, dateAdded)
         fridgeList.createList(items, quantity, expDate, category, dateAdded)
