@@ -38,7 +38,7 @@ class Inventory:
             print("Your Inventory is empty.")
 
         # parse expiration date to datetime object
-        parsedDate = datetime.strptime(expDate, "%m/%d/%Y")
+        parsedDate = datetime.strptime(expDate, "%m/%d/%Y").isoformat()
 
         # create a dictionary for each food entry
         newRow = {
@@ -145,6 +145,9 @@ def main():
         
 
         continueList = input("Would you like to enter another item? (Y/N): ").upper()
+
+    fridgeList.updateExpDate("cheese")
+    
         
 
 main()
