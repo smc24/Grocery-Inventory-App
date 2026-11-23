@@ -267,7 +267,7 @@ def main():
     # fridgeList.updateCategory("cheese")
     # fridgeList.updateName()
     # fridgeList.updateQuantity()
-    fridgeList.removeItem()
+    # fridgeList.removeItem()
     
         
 
