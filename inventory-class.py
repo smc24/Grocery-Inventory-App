@@ -176,11 +176,11 @@ def main():
         try:   
             items = input("Enter the name of the item: ").lower()
             print("Enter the category this item belongs to:")
-            print("- Dairy (ex. cheese, Eggs)")
-            print("- Fresh Produce(ex. fruit, veggies)")
-            print("- Protein (ex. chicken, fish ,shell fish )")
-            print("- Condiments (ex. mayo,relish)")
-            print("- Drinks (ex. juices, tea, water , smoothie)")
+            print("- Dairy (ex. cheese, eggs)")
+            print("- Fresh Produce (ex. fruit, veggies)")
+            print("- Protein (ex. chicken, fish, shell fish)")
+            print("- Condiments (ex. mayo, relish)")
+            print("- Drinks (ex. juices, tea, water, smoothie)")
 
             category = input("Select a category: \n").lower()
 
@@ -197,8 +197,8 @@ def main():
 
         continueList = input("Would you like to enter another item? (Y/N): ").upper()
 
-    fridgeList.updateExpDate("cheese")
-    fridgeList.updateCategory("cheese")
+    # fridgeList.updateExpDate("cheese")
+    # fridgeList.updateCategory("cheese")
     
         
 
