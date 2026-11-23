@@ -54,6 +54,29 @@ class Inventory:
         print("Item added successfully.\n")
         print(self.loadInventory())
 
+    def updateName(self):
+
+        df = self.loadInventory()
+
+        itemName = input("Enter the current food name: ").lower()
+
+        matches = df.index[df["Item Name"].str.lower() == itemName].tolist()
+
+        if not matches:
+            print("Item not found.")
+            return
+
+        newName = input("Enter the new food name: ").lower()
+
+        df.loc[matches, "Item Name"] = newName
+
+        # self.saveItems(df)
+        df.to_csv(self.INVENTORY_FILE, index=False)
+
+        print("Food name updated successfully!")
+        print(self.loadInventory())
+
+
     def updateExpDate(self, itemName):
         df = self.loadInventory()
 
@@ -199,6 +222,7 @@ def main():
 
     # fridgeList.updateExpDate("cheese")
     # fridgeList.updateCategory("cheese")
+    fridgeList.updateName()
     
         
 
